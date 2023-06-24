@@ -30,7 +30,9 @@ services:
       dockerfile: ./../authentication-service/authentication-service.dockerfile
     restart: always
     ports: 
-      - "8081:8084"
+    # listen on port 8081 outside of docker, and on port 80 inside of docker.
+    # Inside docker ,we can have multiple services listen on same port
+      - "8081:80"
     deploy:
       mode: replicated
       replicas: 1
