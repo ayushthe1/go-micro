@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	webPort  = "80" // listen on port 80 inside of docker
+	webPort  = "80"
 	rpcPort  = "5001"
-	mongoURL = "mongodb://mongourl:27017"
+	mongoURL = "mongodb://mongo:27017"
 	gRpcPort = "50001"
 )
 
@@ -31,7 +31,6 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-
 	client = mongoClient
 
 	// create a context in order to disconnect
@@ -61,11 +60,12 @@ func main() {
 	if err != nil {
 		log.Panic()
 	}
+
 }
 
 // func (app *Config) serve() {
 // 	srv := &http.Server{
-// 		Addr:    fmt.Sprint(":%s", webPort),
+// 		Addr: fmt.Sprintf(":%s", webPort),
 // 		Handler: app.routes(),
 // 	}
 
@@ -84,9 +84,9 @@ func connectToMongo() (*mongo.Client, error) {
 	})
 
 	// connect
-	c, err := mongo.Connect(context.TODO(), clientOptions) // Pass context.TODO if you are unsure about which Context to use.
+	c, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
-		log.Println("Error connecting", err)
+		log.Println("Error connecting:", err)
 		return nil, err
 	}
 
