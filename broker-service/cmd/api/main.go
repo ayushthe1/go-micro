@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const webPort = "8084"
+const webPort = "80"
 
 // Receiver that we use for the application
 type Config struct{}

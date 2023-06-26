@@ -14,11 +14,21 @@ services:
     # map port 8080 on my localhost to port 8084 on the docker image
     # we should be able to hit the broker service on port 8080 from my front-end (or we can hit the broker-service on localhost:8080 on postman to check its response as all traffic on localhost:8080 is forwarded to port 8084 of container broker-service)
     # 8084 bcoz in broker-service/main.go ,we have configured broker service to listen on port 8084.So it will listen on port 8084 inside the container.
-      - "8080:8084"
+      - "8080:80"
     # The deploy section contains configuration options for deploying the service to a swarm cluster (Docker's native orchestration and clustering solution).
     deploy:
       mode: replicated
       # we can only have 1 replica in this case bcoz we can't listen to 2 docker images on port 8080 on localhost
+      replicas: 1
+
+
+  logger-service:
+    build: 
+      context: ./../logger-service
+      dockerfile: ./../logger-service/logger-service.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
       replicas: 1
 
 
@@ -57,3 +67,16 @@ services:
       POSTGRES_DB: users
     volumes:   # volumes so that the data persists
       - ./db-data/postgres/:/var/lib/postgresql/data/
+
+  mongo:
+    image: 'mongo:4.2.16-bionic'
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: logs
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./db-data/mongo/:/data/db 
+
+

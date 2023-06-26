@@ -25,7 +25,9 @@ type Config struct {
 	Models data.Models
 }
 
-const webPort = "8084"
+// authentication service will listen on port 80 inside of docker.
+// you can have multiple services listening on the same port inside docker, just as if they were separate machines. So every single web/api service inside of docker can all listen on port 80.
+const webPort = "80"
 
 var counts int64
 
