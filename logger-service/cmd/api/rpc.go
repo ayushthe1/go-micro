@@ -1,3 +1,6 @@
+// The big difference between RPC and gRPC is that you don't have to have both ends (one microservice acting as client & other as server) written in go.
+// gRPC supports all languages and even if both ends are written in different languages.
+
 package main
 
 import (

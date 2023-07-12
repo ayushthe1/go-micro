@@ -1,0 +1,40 @@
+// This file is used to determine what kind of source code should be produced. 
+
+// .proto file is used to define the structure and format of the data that will be exchanged between different systems or services.
+
+//Once the .proto file is defined, it can be compiled into language-specific code (e.g., Go, Java, Python) using a protocol buffer compiler. The generated code provides convenient APIs to work with the defined messages and services in your programming language of choice.  The generated code provides functions and methods to easily create, read, and send data according to the structure defined in the .proto file.
+
+// In summary, a .proto file is used to define the structure of data that will be exchanged between programs. It acts as a contract or agreement between programs, ensuring they understand each other's data format. The file is used to generate code in different languages, making it easier to work with the defined data structures and enabling communication between programs written in different languages.
+
+syntax = "proto3";
+
+package logs;
+
+option go_package = "/logs";
+
+// kinds of information that will be passed around (information we pass everytime we sends something to logger microservice)
+message Log{
+    string name = 1;
+    string data = 2;
+}
+
+// LogRequest is the request to perform a log operation
+message LogRequest {
+    Log logEntry = 1;
+}
+
+// what we send back in response to LogRequest
+message LogResponse {
+    string result = 1;
+
+}
+
+// define the services
+service LogService {
+    // define the name of the function that this gRPC system is going to have
+    rpc WriteLog(LogRequest) returns (LogResponse);
+
+}
+
+// We run this command using the Protocol Buffers compiler (protoc) to generate Go code from the logs.proto file
+// protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative logs.proto

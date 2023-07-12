@@ -49,6 +49,24 @@ services:
     environment:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
     
+  # Add the mailer service
+  mailer-service:
+    build:
+      context:  ./../mail-service
+      dockerfile: ./../mail-service/mail-service.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      MAIL_DOMAIN: localhost
+      MAIL_HOST:  mailhog
+      MAIL_PORT:  1025
+      MAIL_USERNAME:  ""
+      MAIL_PASSWORD:  ""
+      MAIL_ENCRYPTION:  none
+      FROM_NAME:  "John Smith"
+      FROM_ADDRESS: john.smith@example.com
 
 
 
@@ -79,4 +97,30 @@ services:
     volumes:
       - ./db-data/mongo/:/data/db 
 
+
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+    - "1025:1025"
+    - "8025:8025"
+
+# get the rabbitmq image from dockerhub
+  rabbitmq:
+    image: 'rabbitmq:3.9-alpine'
+    ports:
+      - "5672:5672"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./db-data/rabbitmq/:/var/lib/rabbitmq/
+    
+
+  listener-service:
+    build:
+      context: ./../listener-service
+      dockerfile: ./../listener-service/listener-service.dockerfile
+    deploy:
+      mode: replicated
+      replicas: 1
 

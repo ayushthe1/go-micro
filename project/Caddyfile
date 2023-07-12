@@ -1,0 +1,41 @@
+{
+    email   you@gmail.com
+}
+
+(static) {
+	@static {
+		file
+		path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.json
+	}
+	header @static Cache-Control max-age=5184000
+}
+
+(security) {
+	header {
+		# enable HSTS
+		Strict-Transport-Security max-age=31536000;
+		# disable clients from sniffing the media type
+		X-Content-Type-Options nosniff
+		# keep referrer data off of HTTP connections
+		Referrer-Policy no-referrer-when-downgrade
+	}
+}
+
+localhost:80 {
+	encode zstd gzip
+	import static
+
+	reverse_proxy  http://front-end:8082
+}
+
+# Any request to port 80 for the server named backend ,send that to broker-service
+backend:80 {
+	# uses a reverse proxy to forward those requests to a backend server running inside a Docker container with the address http://broker-service:8080.
+	reverse_proxy http://broker-service:8080 # this is address of broker-service listening inside docker
+}
+
+# The key difference between a reverse proxy and a forward proxy is that a forward proxy enables computers isolated on a private network to connect to the public internet, while a reverse proxy enables computers on the internet to access a private subnet.
+
+# A forward proxy accepts connections from computers on a private network and forwards those requests to the public internet. It is the single point of exit for subnet users who want to access resources outside of their private network.
+
+# The reverse proxy acts as a single point of entry for external systems to access resources on a private subnet.

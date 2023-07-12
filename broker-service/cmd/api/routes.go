@@ -33,6 +33,8 @@ func (app *Config) routes() http.Handler {
 
 	mux.Post("/", app.Broker)
 
+	mux.Post("/log-grpc", app.LogViaGRPC)
+
 	// single point of entry to broker service
 	mux.Post("/handle", app.HandleSubmission)
 

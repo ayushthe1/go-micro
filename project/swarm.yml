@@ -1,0 +1,121 @@
+version: '3'
+
+services:
+# We should name the services the same as we did in our docker-compose file, so that we don't have to change the urls we call for each of those services
+  
+  caddy:
+    image: ayushthe1/micro-caddy:1.0.0
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+
+  front-end:
+    image: ayushthe1/front-end:1.1.2
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+    # This evironment
+      BROKER_URL: "http://backend"
+  
+  broker-service:
+    image: ayushthe1/broker-service:1.0.1
+    # ports:
+    # # map port 8080 on my machine to port 80 in docker
+    #   - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    
+  listener-service:
+    image: ayushthe1/listener-service:1.0.0
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  authentication-service:
+    image: ayushthe1/authentication-service:1.0.0
+    deploy:
+      mode: replicated
+      replicas: 1
+    # add environment variables
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+
+  logger-service:
+    image: ayushthe1/logger-service:1.0.0
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  mailer-service:
+    image: ayushthe1/mail-service:1.0.0
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      MAIL_DOMAIN: localhost
+      MAIL_HOST:  mailhog
+      MAIL_PORT:  1025
+      MAIL_USERNAME:  ""
+      MAIL_PASSWORD:  ""
+      MAIL_ENCRYPTION:  none
+      FROM_NAME:  "John Smith"
+      FROM_ADDRESS: john.smith@example.com
+
+  
+  rabbitmq:
+    image: 'rabbitmq:3.9-alpine'
+    deploy:
+      mode: global
+  
+
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - '8025:8025'
+    deploy:
+      mode: global # we only want 1 instance of mailhog to be running
+
+  mongo:
+    image: 'mongo:4.2.17-bionic'
+    ports:
+      - '27017:27017'
+    deploy:
+      mode: global
+    environment:
+      MONGO_INITDB_DATABASE: logs
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+    # When the image comes up ,map the local directory in the db-data to the appropriate directory in the docker image
+      - ./db-data/mongo/:/data/db 
+
+
+  postgres:
+    image: 'postgres:14.2'
+    ports:
+      - "5432:5432" # map port 5444 on my local machine to 5432 on my docker container
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    volumes:   # volumes so that the data persists
+      - ./db-data/postgres/:/var/lib/postgresql/data/
+
+# This is telling the swarm where to find the data
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
+      

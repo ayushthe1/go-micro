@@ -11,7 +11,7 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-const webPort = "80"
+const webPort = "8080" // listen on this port inside docker
 
 // Receiver that we use for the application
 type Config struct {
