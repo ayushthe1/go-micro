@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: "rabbitmq:3.9-alpine"
+        ports:
+        - containerPort: 5672
+
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+# It's important to use rabbitmq here bcoz thats how we're referring to it in the actual code for our microservice. So we have to use the same name here that we used in the URLs we specified when we connect to RabbitMQ in our go code.
+  name: rabbitmq
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+  - protocol: TCP
+    name: main-port
+    port: 5672
+    targetPort: 5672
+
+

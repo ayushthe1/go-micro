@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: listener-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: listener-service
+  template:
+    metadata:
+      labels:
+        app: listener-service
+    spec:
+      containers:
+      - name: listener-service
+        image: "ayushthe1/listener-service:1.0.0"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: listener-service
+spec:
+  selector:
+    app: listener-service
+  ports:
+    - protocol: TCP
+      name: web-port
+      port: 80
+      targetPort: 80

@@ -1,0 +1,24 @@
+# This is a docker compose file .We will setup postgres outside of our cluster and not with other microservice.. 
+
+# This Docker Compose file can be used with the docker-compose command-line tool to manage the PostgreSQL database service and its dependencies. By running docker-compose up, it will create and start the Postgres container with the specified configurations. The data will be persisted on the host machine due to the volume mount, ensuring that the data is available across container restarts and even if the entire application stack is removed and redeployed.
+
+version:  '3'
+
+services:
+  # Add a Postegres service
+  postgres:
+    image: 'postgres:14.2'
+    ports:
+      - "5432:5432" # map port 5432 on my local machine to 5432 on my docker container
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    volumes:   # volumes so that the data persists
+      - ./db-data/postgres/:/var/lib/postgresql/data/
+
+

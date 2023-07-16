@@ -1,0 +1,53 @@
+# This YAML file can be used with the Kubernetes kubectl command-line tool to create the Deployment and Service in a Kubernetes cluster. Once applied, Kubernetes will ensure that the specified number of replicas (in this case, one) of the containerized application (specified by the Docker image) are running, and a stable endpoint is provided through the Service to access these replicas. The Service acts as a load balancer, distributing traffic among the pods managed by the Deployment, making the application highly available and scalable.
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication-service
+  template:
+    metadata:
+      labels:
+        app: authentication-service
+    spec:
+      containers:
+      - name: authentication-service
+        image: "ayushthe1/authentication-service:1.0.0"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+          - name: DSN
+          # The host.minikube.internal hostname is used to access services running inside the Minikube cluster from your host machine.
+            value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+        ports:
+          - containerPort: 80
+
+---
+
+# A Service in Kubernetes provides a stable endpoint to access the pods managed by the Deployment.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication-service
+# The spec section defines the desired state for the Service
+spec:
+# The selector allows the Service to determine which pods to target.
+  selector:
+# The Service will target pods with the label "app: authentication-service" (matching the Deployment's selector)
+    app: authentication-service
+  ports:
+    - protocol: TCP
+      name: main-port
+      port: 80
+      targetPort: 80

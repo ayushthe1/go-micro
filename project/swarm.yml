@@ -73,7 +73,9 @@ services:
   rabbitmq:
     image: 'rabbitmq:3.9-alpine'
     deploy:
+    # global means keep one instance of this service running on every node of the swarm
       mode: global
+      
   
 
   mailhog:
