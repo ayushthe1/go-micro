@@ -1,5 +1,5 @@
 # This YAML file can be used with the Kubernetes kubectl command-line tool to create the Deployment and Service in a Kubernetes cluster. Once applied, Kubernetes will ensure that the specified number of replicas (in this case, one) of the containerized application (specified by the Docker image) are running, and a stable endpoint is provided through the Service to access these replicas. The Service acts as a load balancer, distributing traffic among the pods managed by the Deployment, making the application highly available and scalable.
-
+# The host.minikube.internal hostname is used to access services running inside the Minikube cluster from your host machine.
 
 apiVersion: apps/v1
 kind: Deployment
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: authentication-service
-        image: "ayushthe1/authentication-service:1.0.0"
+        image: "ayushthe1/authentication-service:2.0.0"
         resources:
           requests:
             memory: "64Mi"
@@ -27,10 +27,9 @@ spec:
             cpu: "500m"
         env:
           - name: DSN
-          # The host.minikube.internal hostname is used to access services running inside the Minikube cluster from your host machine.
             value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
         ports:
-          - containerPort: 80
+          - containerPort: 80  #This indicates that the container listens on port 80
 
 ---
 
@@ -49,5 +48,8 @@ spec:
   ports:
     - protocol: TCP
       name: main-port
-      port: 80
-      targetPort: 80
+      port: 80        #  port number on which the Service should listen internally.  It represents the port on which the Service is exposed internally within the cluster.
+      targetPort: 80  # port number on which the backend Pod is listening. It represents the port on which the actual application or service is running inside the Pod. When a request is sent to the Service, it will forward the traffic to the backend Pods on this targetPort.
+
+
+# The `minikube tunnel` command creates a network tunnel to expose services of type LoadBalancer to your local machine.

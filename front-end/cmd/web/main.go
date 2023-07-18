@@ -53,6 +53,7 @@ func render(w http.ResponseWriter, t string) {
 	}
 
 	data.BrokerURL = os.Getenv("BROKER_URL")
+	// data.BrokerURL = "http://localhost:8080" // for connecting to broker through load balancer (cmd minikube tunnel)
 
 	// use the Execute method to render the template
 	if err := tmpl.Execute(w, data); err != nil {

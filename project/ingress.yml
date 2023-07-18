@@ -1,0 +1,34 @@
+# an Ingress is an API resource that serves as an entry point to our cluster from the external world. It allows you to expose HTTP and HTTPS routes to services running inside our Kubernetes cluster. In simple terms, Ingress enables external access to our cluster's services and provides a way to route incoming traffic to different services based on rules defined in the Ingress configuration.
+
+# After creating this file ,we have to edit the /etc/host file and add '127.0.0.1    front-end.info broker-service.info' .
+
+# By mapping front-end.info and broker-service.info to 127.0.0.1, any request made to these domain names from our local machine will be redirected back to the machine itself. In other words, any attempt to access front-end.info or broker-service.info will be directed to the local machine's network stack. /etc/hosts file acts as a local DNS resolver, and by adding these entries, you are effectively bypassing any public DNS resolution for these domain names
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - host: front-end.info
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: front-end # name of the pod to route to
+                port:
+                  number: 8082
+    - host: broker-service.info
+      http:
+        paths:
+          - path: /(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: broker-service
+                port:
+                  number: 8080
