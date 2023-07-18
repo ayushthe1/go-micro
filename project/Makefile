@@ -6,6 +6,16 @@ MAILER_BINARY=mailApp
 LISTENER_BINARY=listenerApp
 FRONT_BINARY=frontEndApp
 
+
+deploy_swarm:
+	docker swarm init
+	@echo "Deploying project on docker swarm...."
+	docker stack deploy -c swarm.yml myMicroApp
+
+undeploy_swarm:
+	@echo "Leaving the docker swarm...."
+	docker swarm leave --force
+
 ## up: starts all containers in the background without forcing build
 up:
 	@echo "Starting Docker images..."
