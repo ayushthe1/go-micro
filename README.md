@@ -12,7 +12,7 @@ This project can be deployed either via a docker swarm (also via minikube cluste
 ### Demo Video
 
 <video style="width: 70%; height: auto;" controls>
-  <source src="./demo.webm" type="video/mp4">
+  <source src="./demo.webm" type="video/webm">>
   Sample
 </video>
 
