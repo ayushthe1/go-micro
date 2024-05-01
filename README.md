@@ -10,20 +10,17 @@ This project can be deployed either via a docker swarm (also via minikube cluste
 ---
 
 ### Demo Video
+[Screencast from 01-05-24 11:14:35 AM IST.webm](https://github.com/ayushthe1/go-micro/assets/114604338/98876a9e-b408-4b5a-b6d4-ea7ee8c5af9d)
 
-<video style="width: 70%; height: auto;" controls>
-  <source src="./demo.webm" type="video/webm">>
-  Sample
-</video>
 
 ---
 
 ### These are the core services that perform distributed actions 
-- [authentication-service](https://github.com/ayushthe1/go-micro/tree/master/authentication-service) for Authenticating users
+- [authentication-service](https://github.com/ayushthe1/go-micro/tree/master/authentication-service) for Authenticating users. Stores the users data in a Postgres Container.
 - [Broker Service](https://github.com/ayushthe1/go-micro/tree/master/broker-service) is the central node point for handling each request from the client and rendering a response to the client. This Service calls the right service(authentication, listener, logger and mailer )  when a request is called from the front-end  
-- [logger-service](https://github.com/ayushthe1/go-micro/tree/master/logger-service) receives and accepts the data from the authentication, listener and mailer service ,when each service has been called through the broker service . The data from each service is stored in a  mongoDb database.It also handles the gRPC and RPC actions when called by the broker service. 
+- [logger-service](https://github.com/ayushthe1/go-micro/tree/master/logger-service) receives and accepts the data from the authentication, listener and mailer service ,when each service has been called through the broker service . The data from each service is stored in a  MongoDb database.It also handles the gRPC and RPC actions when called by the broker service. 
 - [mail-service](https://github.com/ayushthe1/go-micro/tree/master/mail-service) Handles sending of mails
-- [listener-service](https://github.com/ayushthe1/go-micro/tree/master/listener-service) This service handles queues 
+- [listener-service](https://github.com/ayushthe1/go-micro/tree/master/listener-service) This service consumes messages in RabbitMQ (running in a different container) and initiates a process.
 - [front-end](https://github.com/ayushthe1/go-micro/tree/master/project/Caddyfile) just displays outputs for each action performed internally
 - [Caddy-service](https://github.com/ayushthe1/go-micro/tree/master/project/Caddyfile) acts as a reverse proxy. It forwards requests coming to http://localhost to the front-end service.
 
