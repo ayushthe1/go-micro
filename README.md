@@ -4,8 +4,17 @@ This is a project consisting of 6 different microservices written in GoLang. Thi
 
 The main goal of this project is to provide a clear and concise understanding of the communication mechanisms utilized by this microservice architecture-based distributed system. By doing so, users can gain a comprehensive understanding of how the system operates and how these communication mechanisms enable seamless integration between different software services, leading to a more efficient and scalable application..
 
-This project can be deployed either via a docker swarm or a minikube cluster.
+This project can be deployed either via a docker swarm (also via minikube cluster in future).
 
+![Project Architecture](go-micro-arch.png)
+---
+
+### Demo Video
+
+<video style="width: 70%; height: auto;" controls>
+  <source src="./demo.webm" type="video/mp4">
+  Sample
+</video>
 
 ---
 
@@ -15,9 +24,13 @@ This project can be deployed either via a docker swarm or a minikube cluster.
 - [logger-service](https://github.com/ayushthe1/go-micro/tree/master/logger-service) receives and accepts the data from the authentication, listener and mailer service ,when each service has been called through the broker service . The data from each service is stored in a  mongoDb database.It also handles the gRPC and RPC actions when called by the broker service. 
 - [mail-service](https://github.com/ayushthe1/go-micro/tree/master/mail-service) Handles sending of mails
 - [listener-service](https://github.com/ayushthe1/go-micro/tree/master/listener-service) This service handles queues 
-- [front-end](https://github.com/ayushthe1/go-micro/tree/master/front-end) just displays outputs for each action performed internally
+- [front-end](https://github.com/ayushthe1/go-micro/tree/master/project/Caddyfile) just displays outputs for each action performed internally
+- [Caddy-service](https://github.com/ayushthe1/go-micro/tree/master/project/Caddyfile) acts as a reverse proxy. It forwards requests coming to http://localhost to the front-end service.
 
-  
+
+
+
+
 ---
 
 ### To deploy via Docker swarm 
@@ -40,5 +53,3 @@ This project can be deployed either via a docker swarm or a minikube cluster.
 7. The project will be deployed on docker swarm.
 
 
-
-### More details coming soon ....😙
